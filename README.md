@@ -1,1 +1,1 @@
-# Automated-Control-System-for-Medical-Ventilator-Management-NEXAVENT
+# Automated-Control-System-for-CNC-Machine
