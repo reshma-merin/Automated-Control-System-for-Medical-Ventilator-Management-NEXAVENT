@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/270101741740603225/60620ec8716f4b19b4c186f5d022d1f5/artifacts
+end_time: 1774117366721
+entry_point_name: ''
+experiment_id: '270101741740603225'
+lifecycle_stage: active
+run_id: 60620ec8716f4b19b4c186f5d022d1f5
+run_name: conv1d-autoencoder
+run_uuid: 60620ec8716f4b19b4c186f5d022d1f5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774117347751
+status: 3
+tags: []
+user_id: reshmamerinthomas

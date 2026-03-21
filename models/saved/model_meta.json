@@ -1,0 +1,86 @@
+{
+  "n_features": 9,
+  "feature_names": [
+    "Air temperature [K]",
+    "Process temperature [K]",
+    "Rotational speed [rpm]",
+    "Torque [Nm]",
+    "Tool wear [min]",
+    "power_W",
+    "temp_delta_K",
+    "wear_rate",
+    "torque_x_rpm"
+  ],
+  "operator_ranges": {
+    "Air temperature [K]": {
+      "min": 295.0,
+      "max": 305.0
+    },
+    "Process temperature [K]": {
+      "min": 305.0,
+      "max": 315.0
+    },
+    "Rotational speed [rpm]": {
+      "min": 1200,
+      "max": 2800
+    },
+    "Torque [Nm]": {
+      "min": 10.0,
+      "max": 70.0
+    },
+    "Tool wear [min]": {
+      "min": 0,
+      "max": 240
+    }
+  },
+  "failure_solutions": {
+    "TWF": [
+      "Replace cutting tool immediately \u2014 wear limit exceeded",
+      "Inspect tool holder for damage or misalignment",
+      "Review tool life settings and reduce cut depth by 10%",
+      "Check coolant flow rate to cutting zone"
+    ],
+    "HDF": [
+      "Check coolant system \u2014 flow rate may be insufficient",
+      "Reduce spindle speed by 15% to lower heat generation",
+      "Inspect and clean heat exchanger fins",
+      "Verify ambient temperature in machining area"
+    ],
+    "PWF": [
+      "Check spindle motor and drive unit for faults",
+      "Verify power supply voltage is within spec (\u00b15%)",
+      "Inspect electrical connections in the control cabinet",
+      "Reduce torque load \u2014 current cut parameters too aggressive"
+    ],
+    "OSF": [
+      "Reduce torque setpoint \u2014 overstrain threshold exceeded",
+      "Decrease feed rate by 20% to reduce mechanical load",
+      "Check workpiece clamping \u2014 vibration may be amplifying torque",
+      "Inspect gearbox and spindle bearings for wear"
+    ],
+    "RNF": [
+      "Run full diagnostic cycle on all subsystems",
+      "Check machine logs for intermittent error codes",
+      "Inspect all sensor connections for loose contacts",
+      "Schedule preventive maintenance inspection"
+    ]
+  },
+  "models": {
+    "lstm": {
+      "test_auc": 0.9696883584351614,
+      "threshold": 0.5
+    },
+    "autoencoder": {
+      "test_auc": 0.9726684515841143,
+      "threshold": 0.005788642214611173
+    },
+    "rf": {
+      "test_auc": 0.999888442659527,
+      "threshold": 0.5
+    },
+    "gbr": {
+      "test_mae_min": 0.0021182448041410927,
+      "test_r2": 0.9999999961443786
+    }
+  }
+}

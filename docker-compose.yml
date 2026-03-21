@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  mlflow:
+    image: python:3.11-slim
+    command: bash -c "pip install mlflow -q && mlflow ui --host 0.0.0.0 --port 5000"
+    ports: ["5000:5000"]
+    volumes: ["./mlruns:/mlruns"]
+
+  api:
+    build: { context: ., dockerfile: Dockerfile.api }
+    ports: ["8000:8000"]
+    volumes: ["./models/saved:/app/models/saved", "./data/processed:/app/data/processed"]
+
+  streamlit:
+    build: { context: ., dockerfile: Dockerfile.streamlit }
+    ports: ["8501:8501"]
+    environment: ["API_BASE=http://api:8000"]
+    depends_on: [api]

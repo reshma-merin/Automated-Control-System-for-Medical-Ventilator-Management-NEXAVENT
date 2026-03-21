@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1774117370521
+current_stage: None
+description: null
+last_updated_timestamp: 1774117370521
+name: CNC_WrongParamRF
+run_id: 5d5b22af1fdb46d0b371285764023a46
+run_link: null
+source: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/465980512377091986/5d5b22af1fdb46d0b371285764023a46/artifacts/rf_model
+status: READY
+status_message: null
+storage_location: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/465980512377091986/5d5b22af1fdb46d0b371285764023a46/artifacts/rf_model
+user_id: null
+version: 1

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/465980512377091986/5d5b22af1fdb46d0b371285764023a46/artifacts
+end_time: 1774117370599
+entry_point_name: ''
+experiment_id: '465980512377091986'
+lifecycle_stage: active
+run_id: 5d5b22af1fdb46d0b371285764023a46
+run_name: random-forest
+run_uuid: 5d5b22af1fdb46d0b371285764023a46
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774117366757
+status: 3
+tags: []
+user_id: reshmamerinthomas

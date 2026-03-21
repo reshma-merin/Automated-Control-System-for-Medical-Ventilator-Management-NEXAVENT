@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1774117347688
+current_stage: None
+description: null
+last_updated_timestamp: 1774117347688
+name: CNC_FailureLSTM
+run_id: fe3fd46dfce34d87a5826e11c879548d
+run_link: null
+source: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/711601538673232921/fe3fd46dfce34d87a5826e11c879548d/artifacts/lstm_model
+status: READY
+status_message: null
+storage_location: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/711601538673232921/fe3fd46dfce34d87a5826e11c879548d/artifacts/lstm_model
+user_id: null
+version: 1

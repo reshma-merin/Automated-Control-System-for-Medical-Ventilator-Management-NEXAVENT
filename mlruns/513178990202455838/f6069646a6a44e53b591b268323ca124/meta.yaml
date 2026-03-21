@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/513178990202455838/f6069646a6a44e53b591b268323ca124/artifacts
+end_time: 1774117376609
+entry_point_name: ''
+experiment_id: '513178990202455838'
+lifecycle_stage: active
+run_id: f6069646a6a44e53b591b268323ca124
+run_name: gradient-boosting-rul
+run_uuid: f6069646a6a44e53b591b268323ca124
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774117370635
+status: 3
+tags: []
+user_id: reshmamerinthomas

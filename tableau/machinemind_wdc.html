@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>MachineMind — Tableau Live Connector</title>
+  <script src="https://connectors.tableau.com/libs/tableauwdc-2.3.latest.js" type="text/javascript"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: white; border-radius: 12px; padding: 32px 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); max-width: 480px; width: 100%; }
+    h2 { margin: 0 0 6px; font-size: 22px; color: #1a1a1a; }
+    .sub { color: #666; font-size: 13px; margin-bottom: 24px; }
+    label { font-size: 13px; font-weight: 600; color: #333; display: block; margin-bottom: 4px; }
+    input { width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; box-sizing: border-box; margin-bottom: 16px; }
+    button { width: 100%; padding: 11px; background: #2563EB; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    .status { font-size: 12px; color: #666; margin-top: 12px; text-align: center; min-height: 18px; }
+    .tables { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .tbl-badge { background: #EEF2FF; color: #3730A3; font-size: 11px; padding: 3px 10px; border-radius: 99px; font-weight: 500; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h2>⚙️ MachineMind</h2>
+  <div class="sub">Live CNC Predictive Maintenance — Tableau Connector</div>
+
+  <label>API Base URL</label>
+  <input type="text" id="apiUrl" value="http://localhost:8000" placeholder="http://localhost:8000" />
+
+  <div style="font-size:12px;color:#666;margin:-10px 0 16px;">Tables available in Tableau after connecting:</div>
+  <div class="tables">
+    <span class="tbl-badge">machines</span>
+    <span class="tbl-badge">alerts</span>
+    <span class="tbl-badge">work_orders</span>
+    <span class="tbl-badge">predictions_history</span>
+  </div>
+
+  <button onclick="connect()">Connect to MachineMind API</button>
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+var API_URL = "http://localhost:8000";
+
+// ── Schema definitions for each table ────────────────────────────────────────
+var schemas = {
+
+  machines: {
+    id: "machines",
+    alias: "Machines — current status",
+    columns: [
+      { id: "machine_id",       alias: "Machine ID",          dataType: tableau.dataTypeEnum.string },
+      { id: "severity",         alias: "Severity",            dataType: tableau.dataTypeEnum.string },
+      { id: "failure_risk",     alias: "Failure Risk",        dataType: tableau.dataTypeEnum.float  },
+      { id: "anomaly_score",    alias: "Anomaly Score",       dataType: tableau.dataTypeEnum.float  },
+      { id: "wrong_param_prob", alias: "Wrong Param Prob",    dataType: tableau.dataTypeEnum.float  },
+      { id: "rul_minutes",      alias: "RUL (minutes)",       dataType: tableau.dataTypeEnum.float  },
+      { id: "last_seen",        alias: "Last Seen",           dataType: tableau.dataTypeEnum.string },
+      { id: "validation_status",alias: "Validation Status",   dataType: tableau.dataTypeEnum.string },
+    ]
+  },
+
+  alerts: {
+    id: "alerts",
+    alias: "Alerts — active",
+    columns: [
+      { id: "id",         alias: "Alert ID",    dataType: tableau.dataTypeEnum.string },
+      { id: "machine_id", alias: "Machine ID",  dataType: tableau.dataTypeEnum.string },
+      { id: "type",       alias: "Alert Type",  dataType: tableau.dataTypeEnum.string },
+      { id: "severity",   alias: "Severity",    dataType: tableau.dataTypeEnum.string },
+      { id: "message",    alias: "Message",     dataType: tableau.dataTypeEnum.string },
+      { id: "value",      alias: "Value",       dataType: tableau.dataTypeEnum.float  },
+      { id: "timestamp",  alias: "Timestamp",   dataType: tableau.dataTypeEnum.string },
+    ]
+  },
+
+  work_orders: {
+    id: "work_orders",
+    alias: "Work Orders",
+    columns: [
+      { id: "id",           alias: "WO ID",         dataType: tableau.dataTypeEnum.string },
+      { id: "machine_id",   alias: "Machine ID",    dataType: tableau.dataTypeEnum.string },
+      { id: "priority",     alias: "Priority",      dataType: tableau.dataTypeEnum.string },
+      { id: "eta",          alias: "ETA",           dataType: tableau.dataTypeEnum.string },
+      { id: "failure_risk", alias: "Failure Risk",  dataType: tableau.dataTypeEnum.float  },
+      { id: "rul_minutes",  alias: "RUL (minutes)", dataType: tableau.dataTypeEnum.float  },
+      { id: "status",       alias: "Status",        dataType: tableau.dataTypeEnum.string },
+      { id: "created_at",   alias: "Created At",    dataType: tableau.dataTypeEnum.string },
+      { id: "actions",      alias: "Actions",       dataType: tableau.dataTypeEnum.string },
+    ]
+  },
+
+  predictions_history: {
+    id: "predictions_history",
+    alias: "Predictions — history",
+    columns: [
+      { id: "machine_id",       alias: "Machine ID",       dataType: tableau.dataTypeEnum.string },
+      { id: "timestamp",        alias: "Timestamp",        dataType: tableau.dataTypeEnum.string },
+      { id: "failure_risk",     alias: "Failure Risk",     dataType: tableau.dataTypeEnum.float  },
+      { id: "anomaly_score",    alias: "Anomaly Score",    dataType: tableau.dataTypeEnum.float  },
+      { id: "wrong_param_prob", alias: "Wrong Param Prob", dataType: tableau.dataTypeEnum.float  },
+      { id: "rul_minutes",      alias: "RUL (minutes)",    dataType: tableau.dataTypeEnum.float  },
+      { id: "severity",         alias: "Severity",         dataType: tableau.dataTypeEnum.string },
+    ]
+  }
+};
+
+// ── WDC connector ─────────────────────────────────────────────────────────────
+var connector = tableau.makeConnector();
+
+connector.getSchema = function(schemaCallback) {
+  var tableSchemas = Object.values(schemas).map(function(s) {
+    return { id: s.id, alias: s.alias, columns: s.columns };
+  });
+  schemaCallback(tableSchemas);
+};
+
+connector.getData = function(table, doneCallback) {
+  var base = JSON.parse(tableau.connectionData).apiUrl;
+
+  var endpoints = {
+    machines:            base + "/api/machines",
+    alerts:              base + "/api/alerts?limit=200",
+    work_orders:         base + "/api/work-orders",
+    predictions_history: base + "/api/predictions/history"
+  };
+
+  var url = endpoints[table.tableInfo.id];
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var rows = [];
+
+      if (table.tableInfo.id === "machines") {
+        var machines = data.machines || [];
+        machines.forEach(function(m) {
+          var scores = m.scores || {};
+          rows.push({
+            machine_id:        m.machine_id        || "",
+            severity:          m.severity          || "ok",
+            failure_risk:      scores.failure_risk     || 0,
+            anomaly_score:     scores.anomaly_score    || 0,
+            wrong_param_prob:  scores.wrong_param_prob || 0,
+            rul_minutes:       scores.rul_minutes      || 240,
+            last_seen:         m.last_seen         || "",
+            validation_status: m.validation_status || "ok",
+          });
+        });
+      }
+
+      else if (table.tableInfo.id === "alerts") {
+        var alerts = data.alerts || [];
+        alerts.forEach(function(a) {
+          rows.push({
+            id:         a.id         || "",
+            machine_id: a.machine_id || "",
+            type:       a.type       || "",
+            severity:   a.severity   || "",
+            message:    a.message    || "",
+            value:      a.value      || 0,
+            timestamp:  a.timestamp  || "",
+          });
+        });
+      }
+
+      else if (table.tableInfo.id === "work_orders") {
+        var wos = data.work_orders || [];
+        wos.forEach(function(w) {
+          rows.push({
+            id:           w.id           || "",
+            machine_id:   w.machine_id   || "",
+            priority:     w.priority     || "",
+            eta:          w.eta          || "",
+            failure_risk: w.failure_risk || 0,
+            rul_minutes:  w.rul_minutes  || 0,
+            status:       w.status       || "",
+            created_at:   w.created_at   || "",
+            actions:      (w.actions || []).join(" | "),
+          });
+        });
+      }
+
+      else if (table.tableInfo.id === "predictions_history") {
+        var history = data.history || [];
+        history.forEach(function(h) {
+          rows.push({
+            machine_id:        h.machine_id        || "",
+            timestamp:         h.timestamp         || "",
+            failure_risk:      h.failure_risk       || 0,
+            anomaly_score:     h.anomaly_score      || 0,
+            wrong_param_prob:  h.wrong_param_prob   || 0,
+            rul_minutes:       h.rul_minutes        || 0,
+            severity:          h.severity           || "ok",
+          });
+        });
+      }
+
+      table.appendRows(rows);
+      doneCallback();
+    })
+    .catch(function(err) {
+      tableau.abortWithError("API error: " + err.message);
+    });
+};
+
+tableau.registerConnector(connector);
+
+// ── Button handler ────────────────────────────────────────────────────────────
+function connect() {
+  API_URL = document.getElementById("apiUrl").value.trim();
+  document.getElementById("status").textContent = "Connecting to " + API_URL + "...";
+
+  fetch(API_URL + "/api/health")
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById("status").textContent =
+        "Connected! Models ready: " + data.models_ready;
+      tableau.connectionData = JSON.stringify({ apiUrl: API_URL });
+      tableau.connectionName = "MachineMind CNC Live Feed";
+      tableau.submit();
+    })
+    .catch(function() {
+      document.getElementById("status").textContent =
+        "Could not reach API. Make sure FastAPI is running on " + API_URL;
+    });
+}
+</script>
+</body>
+</html>

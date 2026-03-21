@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1774117376581
+current_stage: None
+description: null
+last_updated_timestamp: 1774117376581
+name: CNC_RUL_GBR
+run_id: f6069646a6a44e53b591b268323ca124
+run_link: null
+source: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/513178990202455838/f6069646a6a44e53b591b268323ca124/artifacts/gbr_model
+status: READY
+status_message: null
+storage_location: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/513178990202455838/f6069646a6a44e53b591b268323ca124/artifacts/gbr_model
+user_id: null
+version: 1

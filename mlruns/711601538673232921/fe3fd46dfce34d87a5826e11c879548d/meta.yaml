@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/711601538673232921/fe3fd46dfce34d87a5826e11c879548d/artifacts
+end_time: 1774117347708
+entry_point_name: ''
+experiment_id: '711601538673232921'
+lifecycle_stage: active
+run_id: fe3fd46dfce34d87a5826e11c879548d
+run_name: lstm-bilstm
+run_uuid: fe3fd46dfce34d87a5826e11c879548d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774117330827
+status: 3
+tags: []
+user_id: reshmamerinthomas

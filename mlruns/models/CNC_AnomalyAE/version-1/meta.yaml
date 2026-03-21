@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1774117366693
+current_stage: None
+description: null
+last_updated_timestamp: 1774117366693
+name: CNC_AnomalyAE
+run_id: 60620ec8716f4b19b4c186f5d022d1f5
+run_link: null
+source: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/270101741740603225/60620ec8716f4b19b4c186f5d022d1f5/artifacts/autoencoder_model
+status: READY
+status_message: null
+storage_location: file:///C:/Users/reshmamerinthomas/Downloads/MachineMind/mlruns/270101741740603225/60620ec8716f4b19b4c186f5d022d1f5/artifacts/autoencoder_model
+user_id: null
+version: 1
